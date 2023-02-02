@@ -1,0 +1,43 @@
+<template>
+  <div class="flex flex-col items-center">
+    <h2 class="mt-5 text-orange-500 uppercase font-semibold">Popular Movies</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+      <movie-item v-for="movie in movies" :key="movie.id" :movie="movie" :genres="genres"/>
+    </div>
+  </div>
+</template>
+
+<script>
+import MovieItem from "./MovieItem.vue";
+export default {
+  components: { MovieItem },
+  data() {
+    return {
+      movies: [],
+      genres: [],
+    };
+  },
+  async mounted() {
+    this.fetchGenres();
+    try {
+      const response = await this.$http.get("/movie/popular");
+      this.movies = response.data.results;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  methods: {
+    async fetchGenres() {
+      try {
+        const response = await this.$http.get("genre/movie/list");
+        this.genres = response.data.genres;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+};
+</script>
+
+<style>
+</style>
